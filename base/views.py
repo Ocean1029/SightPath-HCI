@@ -449,8 +449,27 @@ def home_page(request):
 
 
 def home_update(request):
-    context = rand_context()
-    context["search_setting"] = "chatroom_home"
+    page = int(request.GET.get('page', 1))
+    items_per_page = 5  # 每页显示5个活动
+    
+    # 获取所有活动
+    competitions = Competition.objects.all()
+    activities = Activity.objects.all()
+    all_items = list(competitions) + list(activities)
+    
+    # 随机打乱顺序
+    random.shuffle(all_items)
+    
+    # 分页逻辑
+    start_index = (page - 1) * items_per_page
+    end_index = start_index + items_per_page
+    current_items = all_items[start_index:end_index]
+    
+    context = {
+        "comp_activity": current_items,
+        "search_setting": "chatroom_home"
+    }
+    
     return render(request, "base/tinder_card.html", context)
 
 
@@ -536,27 +555,46 @@ def save_persona(request):
     if request.user.is_authenticated:
         user_id = request.user.id
         user = User.objects.get(id=user_id)
-        # print (request.POST.get("love_or_nope"))
-        love_or_nope = request.POST.get("love_or_nope")
+        action = request.POST.get("action")  # 新增：获取具体动作
 
         id_str = request.POST.get("id")
         head = id_str.rstrip('0123456789')
         id = int(id_str[len(head):])
 
         if head == "competition":
-            if love_or_nope == "love":
+            if action == "love":
                 user.love_comp.add(id)
-            elif love_or_nope == "nope":
+            elif action == "nope":
                 user.nope_comp.add(id)
+            elif action == "detail":
+                # 处理查看详情
+                return redirect("competition_info", pk=id)
+            elif action == "share":
+                # 处理分享
+                competition = Competition.objects.get(id=id)
+                return JsonResponse({
+                    "url": competition.url,
+                    "name": competition.name
+                })
 
         elif head == "activity":
-            if love_or_nope == "love":
+            if action == "love":
                 user.love_activity.add(id)
-            elif love_or_nope == "nope":
+            elif action == "nope":
                 user.nope_activity.add(id)
+            elif action == "detail":
+                # 处理查看详情
+                activity = Activity.objects.get(id=id)
+                return redirect(activity.url)
+            elif action == "share":
+                # 处理分享
+                activity = Activity.objects.get(id=id)
+                return JsonResponse({
+                    "url": f"https://www.accupass.com/event/{activity.eventIdNumber}",
+                    "name": activity.name
+                })
                 
         user.save()
-        # print(love_or_nope)
 
     return JsonResponse({})
 

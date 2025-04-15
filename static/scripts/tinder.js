@@ -1,4 +1,3 @@
-
 var tinderContainer = document.querySelector('.tinder');
 const shape = 18; //768
 let score_cnt = 0;
@@ -13,7 +12,7 @@ function ajax_save(love_or_nope, id) {
         url: "/save_persona/",
         dataType: 'json',
         data: {
-            "love_or_nope": love_or_nope,
+            "action": love_or_nope,
             "id": id,
             "csrfmiddlewaretoken": CSRF_TOKEN
         },
@@ -110,7 +109,7 @@ async function initCards(do_train = true) {
                 card.style.zIndex = -index;
                 // card.style.transform = 'scale(' + (20 - index) / 20 + ') translateY(-' + 30 * index + 'px)';
             });
-            newCards[0].style.cssText += "touch-action: pan-y pinch-zoom; pointer-events:auto;";
+            newCards[0].style.cssText += "pointer-events:auto;";
             newCards[0].style.filter = "none"
             newCards[0].querySelectorAll('*').forEach(function (child) {
                 child.style.opacity = 1;

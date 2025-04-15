@@ -2,7 +2,7 @@
 
 {% for comp in comp_activity %}
 
-<div class="Wrapper tinder--card" id="{{comp}}{{comp.id}}">
+<div class="feed-card" id="{{comp}}{{comp.id}}">
     <div class="TitleBar">
         {% if comp|stringformat:'s' == "competition" %}
         <a class="SitconX" href="{% url 'competition_info' comp.id %}">
@@ -33,7 +33,6 @@
         <p class="text-light">截止日期: {{comp.end_time}}</p>
     </div>
 
-
     <div class="ShortDescription text-light">
         {% if comp.summary != None %}
         {{comp.summary|linebreaks|slice:150}}
@@ -55,6 +54,15 @@
             <a class="Button text-dark" href="{{ comp.url }}" target="_blank" rel="noopener noreferrer">更多資訊</a>
             {% endif %}
         </div>
+    </div>
+
+    <div class="card-actions">
+        <button class="card-action-button dislike-button" onclick="handleCardAction('nope', '{{comp}}{{comp.id}}')">
+            <i class="fas fa-times"></i>
+        </button>
+        <button class="card-action-button like-button" onclick="handleCardAction('love', '{{comp}}{{comp.id}}')">
+            <i class="fas fa-heart"></i>
+        </button>
     </div>
 </div>
 

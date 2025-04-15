@@ -3,6 +3,7 @@
 
 {% block extra_head %}
 <link rel="stylesheet" type="text/css" media="screen" href="{% static 'styles/home_page.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock extra_head %}
 
 {% block content %}
@@ -11,28 +12,14 @@
 {% endif %} -->
 
 <div class="home_container">
-    <div class="tinder">
-        <!-- {{competitions_count}} -->
-        <!-- <h5 style="padding-left:10px">找到  個比賽</h5> -->
-
-        <div class="tinder--status">
-            <i class="fa fa-remove"></i>
-            <i class="fa fa-heart"></i>
-        </div>
-
-        <script type="text/javascript">
-            var embvec = {};
-        </script>
-
-        <div class="tinder--cards">
+    <div class="feed-container">
+        <div class="feed">
             {% include "base/tinder_card.html" %}
+        </div>
+        
+        <div class="loading-indicator">
             <img draggable="false" class="loading" src="{% static 'images/user_profile_img/loading.gif' %}" />
         </div>
-
-        <!-- <div class="tinder--buttons">
-            <button id="nope"><i class="fa fa-remove"></i></button>
-            <button id="love"><i class="fa fa-heart"></i></button>
-        </div> -->
     </div>
 </div>
 
@@ -47,10 +34,62 @@
 <script type="text/javascript">
     window.CSRF_TOKEN = "{{ csrf_token}}";
     var artifacts = "{{ request.user.artifacts}}"
+    var embvec = {};
 </script>
 <script src="/static/scripts/classification.js"></script>
 
-<script src="/static/scripts/swipe.js"></script>
 <script src="/static/scripts/tinder.js"></script>
 
+<script>
+let isLoading = false;
+let page = 1;
+
+function handleCardAction(action, cardId) {
+    const card = document.getElementById(cardId);
+    if (card) {
+        storeData(cardId, action);
+        card.classList.add('removed');
+        setTimeout(() => {
+            card.remove();
+            checkScroll();
+        }, 300);
+    }
+}
+
+function checkScroll() {
+    if (isLoading) return;
+    
+    const loadingIndicator = document.querySelector('.loading-indicator');
+    const rect = loadingIndicator.getBoundingClientRect();
+    
+    // 当加载指示器进入视口时加载更多内容
+    if (rect.top <= window.innerHeight + 100) {
+        loadMoreContent();
+    }
+}
+
+function loadMoreContent() {
+    if (isLoading) return;
+    isLoading = true;
+    
+    $.ajax({
+        type: "GET",
+        url: "/home_update",
+        data: { page: page },
+        success: function(newData) {
+            $('.feed').append(newData);
+            page++;
+            isLoading = false;
+            initCards();
+            // 加载完成后再次检查是否需要加载更多
+            setTimeout(checkScroll, 100);
+        }
+    });
+}
+
+// 监听滚动事件
+window.addEventListener('scroll', checkScroll);
+// 初始加载
+checkScroll();
+</script>
 {% endblock extraScript %}

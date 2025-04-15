@@ -2,10 +2,18 @@
 
 
 body {
-    height: 100vh;
+    height: auto;
+    min-height: 100vh;
     width: 100vw;
-    position: fixed;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.home_container {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .Wrapper {
@@ -276,12 +284,22 @@ body {
 
 .tinder_love .fa-heart {
     opacity: 1;
-    transform: scale(1.5);
+    transform: scale(1.5) translateY(-20px);
 }
 
 .tinder_nope .fa-remove {
     opacity: 1;
-    transform: scale(1.5);
+    transform: scale(1.5) translateY(20px);
+}
+
+.tinder_detail .fa-info {
+    opacity: 1;
+    transform: scale(1.5) translateX(-20px);
+}
+
+.tinder_share .fa-share {
+    opacity: 1;
+    transform: scale(1.5) translateX(20px);
 }
 
 .fa-heart {
@@ -292,9 +310,16 @@ body {
     color: #CDD6DD;
 }
 
+.fa-info {
+    color: #4CAF50;
+}
+
+.fa-share {
+    color: #2196F3;
+}
+
 .tinder--status {
     position: absolute;
-    /* top: 50%; */
     margin-top: 250px;
     z-index: 2;
     width: 100%;
@@ -311,8 +336,6 @@ body {
     width: 100px;
     margin-left: -50px;
 }
-
-
 
 .tinder {
     display: flex;
@@ -331,51 +354,35 @@ body {
     flex-wrap: wrap;
     align-items: center;
     height: calc(100dvh - 60px);
-
     flex-grow: 1;
-    /* padding-top: 70px; */
     text-align: center;
     justify-content: center;
-    /* align-items: flex-end; */
     z-index: 1;
 }
 
 .tinder--card {
-    /* user-select: none; */
-    opacity: 0;
-    touch-action: none;
-    pointer-events: none;
-
+    opacity: 1;
     display: inline-block;
     overflow-y: auto;
-
     top: calc(max(10vw, 50px) - 50px);
     bottom: calc(max(10vw, 50px) - 50px);
     height: auto;
-    /* height: calc(100%); */
-    /* width: 80vw; */
     max-width: 500px;
-
-    /* background: #447D7A; */
     padding: 8px 0 0 0;
-    /* top right bottom left */
     border-radius: 8px;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
-
     position: absolute;
     will-change: transform;
-    /* transition: all 0.3s ease-in-out; */
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
-    cursor: grab;
+    transition: transform 0.3s ease-in-out;
+    margin: 0 auto;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
-.moving.tinder--card {
-    transition: none;
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
-    cursor: grabbing;
+.tinder--card.removed {
+    transform: translateX(-50%) translateY(-100px);
+    opacity: 0;
 }
 
 .tinder--card img {
@@ -387,8 +394,6 @@ body {
 
 .tinder--card h3 {
     opacity: 0;
-    /* pointer-events: none; */
-    /* user-select: none; */
     margin-top: 32px;
     font-size: 32px;
     padding: 0 16px;
@@ -396,8 +401,6 @@ body {
 
 .tinder--card p {
     opacity: 0;
-    /* pointer-events: none; */
-    /* user-select: none; */
     margin-top: 15px;
     font-size: 20px;
     padding: 0 16px;
@@ -422,4 +425,137 @@ img.loading {
     word-wrap: break-word;
     margin-left: 15px;
     margin-right: 15px;
+}
+
+.feed-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.feed {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.feed-card {
+    background: #447D7A;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+    margin-bottom: 20px;
+    opacity: 1;
+    position: relative;
+}
+
+.card-actions {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    z-index: 5;
+}
+
+.card-action-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card-action-button i {
+    font-size: 16px;
+    color: white;
+}
+
+.card-action-button.like-button {
+    background-color: #FFACE4;
+}
+
+.card-action-button.like-button:hover {
+    background-color: #ff8fd4;
+    transform: scale(1.1);
+}
+
+.card-action-button.dislike-button {
+    background-color: #CDD6DD;
+}
+
+.card-action-button.dislike-button:hover {
+    background-color: #b8c4ce;
+    transform: scale(1.1);
+}
+
+.feed-card.removed {
+    transform: translateY(-100px);
+    opacity: 0;
+}
+
+.loading-indicator {
+    text-align: center;
+    padding: 20px;
+}
+
+.loading-indicator img {
+    width: 40px;
+    height: 40px;
+}
+
+.action-buttons {
+    position: fixed;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.action-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-button i {
+    font-size: 20px;
+    color: white;
+}
+
+.like-button {
+    background-color: #FFACE4;
+}
+
+.like-button:hover {
+    background-color: #ff8fd4;
+    transform: scale(1.1);
+}
+
+.dislike-button {
+    background-color: #CDD6DD;
+}
+
+.dislike-button:hover {
+    background-color: #b8c4ce;
+    transform: scale(1.1);
 }
