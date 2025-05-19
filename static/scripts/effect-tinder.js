@@ -1,3 +1,63 @@
+// Learn More 詳情彈窗功能
+function openDetailSheet(id) {
+    // 1. 找到對應卡片
+    const card = document.querySelector(`.swiper-slide[id$="_${id}"]`);
+    if (!card) {
+        console.error('找不到卡片:', id);
+        return;
+    }
+
+    // 2. 取得卡片內容
+    // 標題
+    let title = card.querySelector('.SitconX')?.textContent || '';
+    // 標籤
+    let tags = Array.from(card.querySelectorAll('.Tag b')).map(e => e.textContent);
+    // 簡介（如有）
+    let desc = card.querySelector('.ShortDescription')?.textContent || '';
+
+    // 3. 填入 modal
+    const sheet = document.querySelector('.activity-detail-sheet');
+    const mask = document.querySelector('.activity-detail-mask');
+    if (sheet && mask) {
+        sheet.classList.add('active');
+        mask.classList.add('active');
+        // 標題
+        let sheetTitle = sheet.querySelector('.sheet-title');
+        if (sheetTitle) sheetTitle.textContent = title;
+        // 標籤
+        let sheetLabels = sheet.querySelector('.sheet-labels');
+        if (sheetLabels) {
+            sheetLabels.innerHTML = '';
+            tags.forEach(tag => {
+                let span = document.createElement('span');
+                span.className = 'sheet-label';
+                span.textContent = tag;
+                sheetLabels.appendChild(span);
+            });
+        }
+        // 簡介
+        let sheetDesc = sheet.querySelector('.sheet-description');
+        if (sheetDesc) sheetDesc.innerHTML = desc;
+        // 移除圖片（如果有）
+        let sheetImg = sheet.querySelector('.sheet-img');
+        if (sheetImg) sheetImg.style.display = 'none';
+    }
+}
+
+function closeDetailSheet() {
+    const sheet = document.querySelector('.activity-detail-sheet');
+    const mask = document.querySelector('.activity-detail-mask');
+    if (sheet && mask) {
+        sheet.classList.remove('active');
+        mask.classList.remove('active');
+    }
+}
+
+// 將函數掛到 window 上
+window.openDetailSheet = openDetailSheet;
+window.closeDetailSheet = closeDetailSheet;
+
+// Swiper effect 實作
 function e({ swiper: e, on: t }) {
     let r, s, n, i, o, a, c;
     let dict_a = {}
@@ -214,4 +274,5 @@ function e({ swiper: e, on: t }) {
             }))
         }))
 }
+
 export { e as E };

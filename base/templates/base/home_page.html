@@ -28,6 +28,18 @@
         </button>
       </div>
     </div>
+
+    <!-- 詳情彈窗 -->
+    <div class="activity-detail-mask"></div>
+    <div class="activity-detail-sheet">
+      <div class="sheet-header">
+        <h2 class="sheet-title"></h2>
+        <button class="sheet-close-btn" onclick="closeDetailSheet()">×</button>
+      </div>
+      <img class="sheet-img" src="" alt="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 12px; margin: 16px 0;">
+      <div class="sheet-labels"></div>
+      <div class="sheet-description"></div>
+    </div>
   </div>
 {% endblock %}
 {% block extraScript %}
@@ -39,7 +51,7 @@
   </script>
   <script src="{% static 'scripts/tinder_data.js' %}"></script>
   <script type="module">
-    //import "/static/scripts/modulepreload-polyfill.js";
+    //import "/static/scripts/modulepreload-polyload.js";
     /** import {
                     S as r
                 } from "/static/scripts/vendor.js"; **/
